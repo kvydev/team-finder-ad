@@ -16,7 +16,6 @@ def project_list(request: HttpRequest):
     projects = Project.objects.annotate(
         participants_count=Count("participants")
     ).select_related("owner")
-    projects = list(projects) * 15
 
     paginator = Paginator(projects, PaginationLimit.PROJECTS_PER_PAGE)
     page_number = request.GET.get("page")

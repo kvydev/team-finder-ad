@@ -18,7 +18,6 @@ from users.forms import (
 @require_GET
 def user_list(request: HttpRequest):
     users = User.objects.all()
-    users = list(users) * 10
     active_filter = None
 
     if request.user.is_authenticated:
