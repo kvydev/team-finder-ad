@@ -108,3 +108,61 @@ span svg {
 .black-button-share svg {
     margin: 0;
 }
+
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 48px;
+    padding-bottom: 48px;
+}
+
+.pagination__btn,
+.pagination__page {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    color: #111;
+    border: 1.5px solid #e0e0e0;
+    background: #fff;
+    transition: background 0.15s, border-color 0.15s, transform 0.1s;
+    cursor: pointer;
+}
+
+.pagination__btn:hover,
+.pagination__page:hover {
+    background: #111;
+    color: #fff;
+    border-color: #111;
+    transform: translateY(-1px);
+}
+
+.pagination__btn--disabled {
+    color: #ccc;
+    border-color: #eee;
+    cursor: default;
+    pointer-events: none;
+}
+
+.pagination__page--active {
+    background: #111;
+    color: #fff;
+    border-color: #111;
+    cursor: default;
+    pointer-events: none;
+}
+
+.pagination__ellipsis {
+    width: 36px;
+    text-align: center;
+    color: #999;
+    font-size: 14px;
+    letter-spacing: 0.05em;
+}

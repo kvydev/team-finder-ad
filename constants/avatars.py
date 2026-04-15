@@ -1,8 +1,19 @@
+class Color:
+    BLUE = (86, 156, 214)
+    PURPLE = (180, 142, 173)
+    GREEN = (106, 153, 85)
+    SKY_BLUE = (156, 220, 254)
+    TERRA_COTTA = (206, 145, 120)
+    WHITE = (255, 255, 255)
+
 AVATAR_SIZE = 256
 AVATAR_GRADIENTS = [
-    ((86, 156, 214), (180, 142, 173)),
-    ((106, 153, 85), (156, 220, 254)),
-    ((206, 145, 120), (180, 142, 173)),
-    ((86, 156, 214), (106, 153, 85)),
-    ((180, 142, 173), (206, 145, 120)),
+    (Color.BLUE, Color.PURPLE),
+    (Color.GREEN, Color.SKY_BLUE),
+    (Color.TERRA_COTTA, Color.PURPLE),
+    (Color.BLUE, Color.GREEN),
+    (Color.PURPLE, Color.TERRA_COTTA),
 ]
+
+FONT_SIZE = 160
+BBOX = (0, 0)

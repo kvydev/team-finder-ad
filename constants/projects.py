@@ -1,3 +1,3 @@
 class ProjectStatus:
-    OPEN = 'open'
-    CLOSED = 'closed'
+    OPEN = "open"
+    CLOSED = "closed"

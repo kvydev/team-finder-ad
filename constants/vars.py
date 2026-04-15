@@ -1,1 +1,1 @@
-GITHUB_URL = 'github.com'
+GITHUB_URL = "github.com"
