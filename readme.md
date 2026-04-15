@@ -49,6 +49,7 @@ cp .env_example .env
 Заполнить `.env`:
 
 ```env
+ALLOWED_HOSTS=localhost,127.0.0.1
 DJANGO_SECRET_KEY=your-secret-key
 DJANGO_DEBUG=True
 
