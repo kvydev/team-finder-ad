@@ -1,0 +1,99 @@
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpRequest, JsonResponse
+from django.views.decorators.http import require_POST, require_GET
+from django.contrib.auth.decorators import login_required
+from typing import Optional
+
+from constants.projects import ProjectStatus
+from projects.models import Project
+from projects.forms import ProjectForm
+
+@require_GET
+def project_list(request: HttpRequest):
+    projects = Project.objects.all()
+    return render(request, 'projects/project_list.html', {'projects': projects})
+
+@require_GET
+def favorite_projects(request: HttpRequest):
+    projects = []
+    if request.user.is_authenticated:
+        projects = request.user.favorites.all()
+
+    return render(request, 'projects/favorite_projects.html', {'projects': projects})
+
+@require_POST
+@login_required
+def toggle_favorite(request: HttpRequest, project_id: int):
+    project = get_object_or_404(Project, id=project_id)
+    if request.user.favorites.filter(pk=project.pk).exists():
+        request.user.favorites.remove(project)
+    else:
+        request.user.favorites.add(project)
+    request.user.save()
+    return JsonResponse({'status': 'ok'})
+
+@require_GET
+def project_details(request: HttpRequest, project_id: int):
+    project = get_object_or_404(Project, id=project_id)
+    return render(request, 'projects/project-details.html', {'project': project})
+
+@require_POST
+def project_complete(request: HttpRequest, project_id: int):
+    project = get_object_or_404(Project, id=project_id)
+    if request.user.is_authenticated:
+        if project.owner.id == request.user.id:
+            if project.status == ProjectStatus.OPEN:
+                project.status = ProjectStatus.CLOSED
+                project.save()
+                return JsonResponse({'status': 'ok', 'project_status': project.status})
+
+@require_POST
+@login_required
+def toggle_participate(request: HttpRequest, project_id: int):
+    project = get_object_or_404(Project, id=project_id)
+    if project.owner.id != request.user.id:
+        if project.participants.filter(pk=request.user.pk).exists():
+            project.participants.remove(request.user)
+            is_participant = False
+        else:
+            project.participants.add(request.user)
+            is_participant = True
+        project.save()
+        return JsonResponse({'status': 'ok', 'participant': is_participant})
+
+@login_required
+def create_project(request: HttpRequest):
+    if request.method == 'POST':
+        form = ProjectForm(request.POST)
+        if form.is_valid():
+            project: Project = form.save(commit=False)
+            project.owner = request.user
+            project.save()
+            project.participants.add(request.user)
+            return redirect('projects:details', project.id)
+    else:
+        form = ProjectForm()
+
+    return render(request, 'projects/create-project.html', {
+        'form': form,
+        'is_edit': False
+    })
+
+@login_required
+def edit_project(request: HttpRequest, project_id: int):
+    project = get_object_or_404(Project, id=project_id)
+    if request.method == 'POST':
+        form = ProjectForm(request.POST, instance=project)
+        if form.is_valid():
+            project: Project = form.instance
+            project.id = project_id
+            project.owner = request.user
+            project.save()
+            return redirect('projects:details', project.id)
+    else:
+        form = ProjectForm(instance=project)
+    
+    return render(request, 'projects/create-project.html', {
+        'form': form,
+        'is_edit': True
+    })
