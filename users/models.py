@@ -7,35 +7,72 @@ from uuid import uuid4
 import random
 import io
 
+from constants.avatars import AVATAR_SIZE, AVATAR_GRADIENTS
 from users.managers import UserManager
 
 class User(AbstractBaseUser):
-    email = models.EmailField(unique=True)
-    name = models.CharField(max_length=124)
-    surname = models.CharField(max_length=124)
-    avatar = models.ImageField(upload_to='avatars/', blank=True)
-    phone = models.CharField(max_length=12)
-    github_url = models.URLField(blank=True)
-    about = models.TextField(max_length=256, blank=True)
-    is_active = models.BooleanField(default=True)
-    is_staff = models.BooleanField(default=False)
-    favorites = models.ManyToManyField(settings.PROJECT_MODEL, related_name='interested_users', blank=True)
+    email = models.EmailField(
+        unique=True,
+        verbose_name="Электронная почта",
+        help_text="Введите адрес электронной почты"
+    )
+    name = models.CharField(
+        max_length=124,
+        verbose_name="Имя",
+        help_text="Введите имя (до 124 символов)"
+    )
+    surname = models.CharField(
+        max_length=124,
+        verbose_name="Фамилия",
+        help_text="Введите фамилию (до 124 символов)"
+    )
+    avatar = models.ImageField(
+        upload_to='avatars/',
+        blank=True,
+        verbose_name="Аватар",
+        help_text="Загрузите изображение профиля (необязательно)"
+    )
+    phone = models.CharField(
+        max_length=12,
+        blank=True,
+        verbose_name="Номер телефона",
+        help_text="Введите номер телефона (необязательно, до 12 символов)"
+    )
+    github_url = models.URLField(
+        blank=True,
+        verbose_name="GitHub URL",
+        help_text="Введите URL вашего профиля на GitHub (необязательно)"
+    )
+    about = models.TextField(
+        max_length=256,
+        blank=True,
+        verbose_name="О себе",
+        help_text="Введите информацию о себе (необязательно, до 256 символов)"
+    )
+    is_active = models.BooleanField(
+        default=True,
+        verbose_name="Активный",
+        help_text="Указывает, активен ли пользователь"
+    )
+    is_staff = models.BooleanField(
+        default=False,
+        verbose_name="Сотрудник",
+        help_text="Указывает, является ли пользователь сотрудником"
+    )
+
+    favorites = models.ManyToManyField(
+        settings.PROJECT_MODEL,
+        related_name='interested_users',
+        blank=True
+    )
 
     USERNAME_FIELD = 'email'
 
     objects = UserManager()
 
     def _generate_avatar(self):
-        GRADIENTS = [
-            ((86, 156, 214), (180, 142, 173)),
-            ((106, 153, 85), (156, 220, 254)),
-            ((206, 145, 120), (180, 142, 173)),
-            ((86, 156, 214), (106, 153, 85)),
-            ((180, 142, 173), (206, 145, 120)),
-        ]
-
-        size = 256
-        color_start, color_end = random.choice(GRADIENTS)
+        size = AVATAR_SIZE
+        color_start, color_end = random.choice(AVATAR_GRADIENTS)
         letter = self.name[0].upper() if self.name else self.email[0].upper()
 
         img = Image.new('RGB', (size, size))
