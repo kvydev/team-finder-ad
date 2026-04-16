@@ -52,14 +52,14 @@ def project_details(request: HttpRequest, project_id: int):
 
 
 @require_POST
+@login_required
 def project_complete(request: HttpRequest, project_id: int):
     project = get_object_or_404(Project, id=project_id)
-    if request.user.is_authenticated:
-        if project.owner.id == request.user.id:
-            if project.status == ProjectStatus.OPEN:
-                project.status = ProjectStatus.CLOSED
-                project.save()
-                return JsonResponse({"status": "ok", "project_status": project.status})
+    if project.owner.id == request.user.id:
+        if project.status == ProjectStatus.OPEN:
+            project.status = ProjectStatus.CLOSED
+            project.save()
+            return JsonResponse({"status": "ok", "project_status": project.status})
 
 
 @require_POST
