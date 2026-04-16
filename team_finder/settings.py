@@ -1,6 +1,8 @@
 from pathlib import Path
 from decouple import config
 
+from django.urls import reverse_lazy
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = config("DJANGO_SECRET_KEY")
@@ -127,4 +129,4 @@ AUTHENTICATION_BACKENDS = ["users.backends.EmailBackend"]
 
 AUTH_USER_MODEL = "users.User"
 PROJECT_MODEL = "projects.Project"
-LOGIN_URL = "/users/login/"
+LOGIN_URL = reverse_lazy("users:login")

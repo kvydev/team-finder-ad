@@ -1,6 +1,5 @@
-from django.core.paginator import Paginator
-from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpRequest
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_POST, require_GET
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
@@ -13,6 +12,7 @@ from users.forms import (
     UserEditForm,
     UserChangePasswordForm,
 )
+from utils import paginate
 
 
 @require_GET
@@ -33,15 +33,11 @@ def user_list(request: HttpRequest):
         elif active_filter == "participants-of-my-projects":
             users = users.filter(participated_projects__in=me.owned_projects.all())
 
-    paginator = Paginator(users, PaginationLimit.USERS_PER_PAGE)
-    page_number = request.GET.get("page")
-    page_obj = paginator.get_page(page_number)
-
     return render(
         request,
         "users/participants.html",
         {
-            "participants": page_obj,
+            "participants": paginate(request, users, PaginationLimit.USERS_PER_PAGE),
             "active_filter": active_filter,
             "active_skill": None,
         },

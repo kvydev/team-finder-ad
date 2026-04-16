@@ -1,4 +1,3 @@
-from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count
 from django.http import HttpRequest, JsonResponse
@@ -9,6 +8,7 @@ from constants.projects import ProjectStatus
 from constants.limits import PaginationLimit
 from projects.forms import ProjectForm
 from projects.models import Project
+from utils import paginate
 
 
 @require_GET
@@ -17,11 +17,11 @@ def project_list(request: HttpRequest):
         participants_count=Count("participants")
     ).select_related("owner")
 
-    paginator = Paginator(projects, PaginationLimit.PROJECTS_PER_PAGE)
-    page_number = request.GET.get("page")
-    page_obj = paginator.get_page(page_number)
-
-    return render(request, "projects/project_list.html", {"projects": page_obj})
+    return render(
+        request,
+        "projects/project_list.html",
+        {"projects": paginate(request, projects, PaginationLimit.PROJECTS_PER_PAGE)},
+    )
 
 
 @require_GET
