@@ -74,7 +74,7 @@ def login(request: HttpRequest):
 
 @login_required
 def edit_profile(request: HttpRequest):
-    form = UserEditForm(request.POST or None, instance=request.user)
+    form = UserEditForm(request.POST or None, request.FILES or None, instance=request.user)
     if form.is_valid():
         form.save()
         return redirect("users:user_detail", request.user.id)

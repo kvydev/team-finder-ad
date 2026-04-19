@@ -26,7 +26,7 @@ class UserLoginForm(forms.Form):
 class UserEditForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ["name", "surname", "phone", "github_url", "about"]
+        fields = ["name", "surname", "phone", "github_url", "about", "avatar"]
 
     def clean_phone(self):
         phone = self.cleaned_data.get("phone")

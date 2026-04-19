@@ -17,15 +17,18 @@
         <div class="avatar-upload">
             <div class="avatar-preview">
                 {% if user.avatar %}
-                    <img src="{{ user.avatar.url }}" alt="Аватар">
+                    <img src="{{ user.avatar.url }}" alt="Аватар" id="avatar-preview-img">
                 {% else %}
-                    <img src="{% static 'images/default-avatar.png' %}" alt="Аватар по умолчанию">
+                    <img src="{% static 'images/default-avatar.png' %}" alt="Аватар по умолчанию" id="avatar-preview-img">
                 {% endif %}
                 <div class="overlay">
-                    <button type="button" onclick="document.getElementById('id_avatar').click()">Заменить</button>
+                    <button type="button" onclick="document.getElementById('avatar-input').click()">Заменить</button>
                 </div>
             </div>
-            {{ form.avatar }}
+            
+            <div style="display: none;">
+                {{ form.avatar }}
+            </div>
         </div>
 
         <div class="form-row">
@@ -71,4 +74,19 @@
         </div>
     </form>
 </div>
+<script>
+    const avatarInput = document.getElementById('id_avatar');
+    avatarInput.id = 'avatar-input';
+
+    avatarInput.addEventListener('change', function () {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById('avatar-preview-img').src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
 {% endblock %}
