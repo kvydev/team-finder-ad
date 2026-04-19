@@ -8,6 +8,9 @@ from users.models import User
 
 
 def validate_phone(phone: str, current_user_pk=None):
+    if not phone:
+        return phone
+    
     if not re.match(PHONE_REGEX, phone):
         raise forms.ValidationError(
             "Номер должен быть в формате 8XXXXXXXXXX или +7XXXXXXXXXX"

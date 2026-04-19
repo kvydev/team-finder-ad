@@ -30,7 +30,11 @@ def favorite_projects(request: HttpRequest):
     if request.user.is_authenticated:
         projects = request.user.favorites.all()
 
-    return render(request, "projects/favorite_projects.html", {"projects": projects})
+    return render(
+        request,
+        "projects/favorite_projects.html",
+        {"projects": paginate(request, projects, PaginationLimit.FAVORITES_PER_PAGE)},
+    )
 
 
 @require_POST
